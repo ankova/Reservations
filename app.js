@@ -1,21 +1,24 @@
 var MobileApp = MobileApp || {};
 MobileApp.Model = Backbone.Model.extend({
     defaults: {
-        firstName: "",
-        lastName: "",
-        date: "",
-        guestsNumber: null,
+        first_name: "",
+        last_name: "",
+        dining_dt: "",
+        guests: null,
         phoneNumber: null,
-        email: ""
-    }
+        email_addr: ""
+    },
+	urlRoot:"/users"
+
 });
+
+
 
 var makeReservation = new MobileApp.Model();
 
 MobileApp.Collection = Backbone.Collection.extend({
     model: MobileApp.Model,
-    url: "/reservations",
-    localStorage: new Backbone.LocalStorage("reservations")
+    url: "/reservations"
 });
 
 var reservations = new MobileApp.Collection();
@@ -24,57 +27,72 @@ var reservations = new MobileApp.Collection();
 MobileApp.ViewMakeReservation = Backbone.View.extend({
     el: $("#reservation-form"),
     model: MobileApp.Model,
-    initialize: function () {
-        var that = this;
-        reservations.bind("add", function () {
-            that.render();
-        });
-    },
+
     events: {
-        "click #submit": "addReservation",
+        "submit": "addReservation",
         "click #seeReservations": "seeReservations"
     },
     render: function () {
-        return this;
+		return this;
+		var that = this;
+		var seeRes = new MobileApp.ViewSeeReservations();
+		reservations.fetch({
+			success: function(reservations){
+				seeRes.render();
+			}
+		})
     },
-    addReservation: function (e) {
-        var that = this;
-        if (e) {
-            e.preventDefault();
-        }
 
-        makeReservation = {
-            firstName: $("#first_name").val(),
-            lastName: $("#last_name").val(),
-            date: $("#dining_dt").val(),
-            guestsNumber: $("#guests").val(),
-            phoneNumber: $("#phone").val(),
-            email: $("#email_addr").val()
-        };
-        reservations.add(makeReservation);
+	addReservation: function(e){
+		var userDetails = $(e.currentTarget).serializeObject();
+		var user = new MobileApp.Model();
+
+		user.save(userDetails, {
+			//success: function(user){
+				//alert(user.toJSON());}
+		});
+
+		e.preventDefault();
+		reservations.add(user);
 
         return reservations;
-    },
-    seeReservations: function (e) {
-        var seeReservations = new MobileApp.ViewSeeReservations({
-            collection: reservations
-        });
+},
+    seeReservations: function () {
+        var seeReservations = new MobileApp.ViewSeeReservations({collection: reservations});
         return seeReservations;
     }
 });
-var reservationForm = new MobileApp.ViewMakeReservation();
+
+ $.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
 
 MobileApp.ViewSeeReservations = Backbone.View.extend({
     el: $("#guestList ul"),
     template: _.template($("#template").html()),
     initialize: function () {
-        $("#reservation-form").css("display", "block");
+    $("#reservation-form").css("display", "block");
         this.$el.empty();
         this.render();
     },
     render: function () {
         _.each(reservations.models, function (i) {
-            $("#guestList ul").append(this.template(i.toJSON()));
+
+            $("#guestList ul").append(this.template(i.attributes));
         }, this);
         return this;
     }
@@ -82,12 +100,12 @@ MobileApp.ViewSeeReservations = Backbone.View.extend({
 
 MobileApp.Router = Backbone.Router.extend({
     routes: {
-        "": "home",
-            "index": "home",
-            "guestList": "guests"
+    	"": "home",
+        "index": "home",
+        "guestList": "guests"
     },
     home: function () {
-        $("#reservation-form").css("display", "block");
+		$("#reservation-form").css("display", "block");
         $("#guestList").css("display", "none");
     },
     guests: function () {
@@ -96,11 +114,14 @@ MobileApp.Router = Backbone.Router.extend({
     }
 });
 
+var reservationForm = new MobileApp.ViewMakeReservation();
+var guests = new MobileApp.ViewSeeReservations();
 var router = new MobileApp.Router();
-router.on("route:guests", function () {
-    router.guests();
-});
+
 router.on("route:home", function () {
-    router.home();
-});
+        reservationForm.render();
+    });
+router.on("route:guestList", function () {
+        guests.render();
+    });
 Backbone.history.start();
