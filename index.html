@@ -2,61 +2,59 @@
 <html>
 		<head>
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-			<link rel="stylesheet" href="screen.css" />
+			<link rel="stylesheet" type="text/css" href="css/screen.css" />
 		</head>
     
     <body>
-		<section id="reservation-form">
-			<form>
-	
-				<label>First name:</label>
-				<input type="text" id="first_name" name="first_name" placeholder="First name" required>
-	
-				<label>Last name:</label>
-				<input type="text" id="last_name" name="last_name" placeholder="Last name" required>
-	
-	
-				<label>Dining date:</label>
-				<input type="date" id="dining_dt" name="dining_dt" required>
-	
-	
-				<label>Number of Covers</label>
-				<input type="number" id="guests" name="guests" value="1" min="1" required>
-	
-				<label>Phone Number</label>
-				<input type="tel" id="phone" name="phone" required>
-	
-				<label>Email address:</label>
-				<input type="email" id="email_addr" name="email_addr" required>
-	
-				<input type="button" id="submit" value="Make Reservation" /> 
-				<a id="seeReservations" href="#guestList">See Reservations</a>
-			</form>
-		</section>
+    <section>
+					<form id="reservation-form">
+
+						<label>First name:</label>
+						<input type="text" id="first_name" name="first_name" placeholder="First name" required>
+
+						<label>Last name:</label>
+						<input type="text" id="last_name" name="last_name" placeholder="Last name" required>
+
+
+						<label>Dining date:</label>
+						<input type="date" id="date" name="dining_dt" required>
+
+
+						<label>Number of Covers</label>
+						<input type="number" id="guests" name="guests" value="1" min="1" required>
+
+					 <label>Phone Number</label>
+					 <input type="tel" id="phone" name="phone" required>
+
+						<label>Email address:</label>
+						<input type="email" id="email" name="email_addr" required>
+
+						<input type="submit" id="submit" value="Make Reservation" /> 
+							<a id="seeReservations" href="#guestList">See Reservations</a>
+					</form>
+
+					</section>
 					
 		<section id="guestList">
-			<h3>Reservations</h3>
-				<ul>
-				</ul>
+					<ul>
+					</ul>
 		</section>
-		<script id="template" type="text/template">
-			<li>
-				<p><b>Full Name:</b><%= firstName %> <%= lastName %></p>
-				<p><b>Date:</b> <%= date %></p>
-				<p><b>Guests:</b> <%= guestsNumber %></p>
-				<p><b>Email:</b> <%= email %></p>
-				<select>
-					<option>Not arrived</option>
-					<option>Seated</option>
-				</select>
-				</li>
-		</script>
+					<script id="template" type="text/template">
+						<li>
+							<p><em>Full Name:</em><%= first_name %></p>
+							<p><em>Last Name:</em><%= last_name %></p>
+							<p><em>Date:</em> <%= dining_dt %></p>
+							<p><em>Guests:</em> <%= guests %></p>
+							<p><em>Email:</em> <%= email_addr %></p>
+							</li>
+					</script>
 					
-		<script src="jquery.min.js "></script>
-		<script src="underscore.js"></script>
-		<script src="backbone.js"></script>
-		<script src="backbone.localStorage-min.js"></script>
-		<script src="app.js"></script>   
+    <script src="js/jquery.min.js "></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/backbone.js"></script>
+    <script type="text/javascript" src="js/backbone.localStorage-min.js"></script>
+    <script src="js/app.js"></script>
+    
     </body>
 
 </html>
